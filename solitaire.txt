@@ -1,0 +1,22 @@
+Create a single-page app in a single HTML file with the following requirements:
+- Name: Solitaire
+- Goal: Move all the cards to the foundation pile
+- This is a game of Klondike Solataire.
+- The game screen is 480x640 pixels
+- The color of the background is green, like a casino table in Las Vegas.
+- The game is played using a standard 52-card deck. The value, suits, and colors are all standard.
+- The cards should look fairly simple. The cards should look similar to cards from a casino in Las Vegas.
+- In the upper-left corner of the game screen are the foundation piles. There are four of them, from left to right.
+- To start, each foundation pile is empty. As a placeholder for each foundation pile is a gray frame in the exact size and shape of a card.
+- In the upper-right corner are the remain cards to draw from. On the far right is the stack, face down. To the left of that are the card that have been drawn, face up.
+- Cards are drawn from the deck one at a time.
+- When the last card from the desk is drawn, what is seen is a gray frame with a refresh symbol on it. Clicking on that will do a redeal and put all the drawn cards back in the same order.
+- The player has unlimited redeals in a game.
+- The majority of the game screen are the 7 columns in the game. They are place in a vertical lineup - cards start at the top of each column, and as they are added, new cards move down.
+- Option #1 for the player to move cards is click-and-drag. They click on a card, move to the destination, and release. The move is made only if the move is legal in Klondike Solitaire.
+- In Option #1, the drop location is forgiving. Cards should snap to valid destinations automatically when dropped nearby
+- Option #2 for the player to move cards is to click on a card. They need to click and release on that card. It will move the card to the foundation if allowed. Otherwise, it will look at an option on the 7 columns, from left to right. If there are no legal moves for that card, the card will shake a little bit.
+- To make it clear, there is no scoring system in this game. There is no time clock shown in this game. There is nothing showing the number of moves made.
+- The should be playable on both a desktop and tablet. The UI should be as same as possible for both.
+
+

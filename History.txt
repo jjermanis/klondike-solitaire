@@ -1,0 +1,24 @@
+Version 01.01	26 minutes dev	2 minutes AI	4 minutes test		32 minutes
+
+The goal for this game is simple. My wife plays solitaire on her tablet. But the
+on-line version have repetitive ads. The base solitaire (Klondike) is in the
+public domain. I can just create a version of the game (like my wife likes)
+without the ads.
+I asked Claude to ask me the question it would have for implementing Klondike
+Solitaire. It had eight - all were easy to answer. Claude developed the initial
+version after this.
+It did well. There a couple defects, some other minor changes, but it is
+playable as-is.
+
+
+
+Defect: moving should work if you click on a card. But it doesn't appear to work
+	except for the end car. To move multiples, you need to click and drag.
+
+TODO: when doing the simple click to move, animation would help. Move by pixels
+	per 1/30th of second?
+TODO: corners are card are a bit on. Centered on top, corner on bottom. Let's
+	go corner bottom
+TODO: fonts are a little small. In particular, I want numbers larger
+
+
