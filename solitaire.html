@@ -107,7 +107,7 @@
   .card-top-left {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-start;
     line-height: 1;
   }
 
@@ -123,13 +123,9 @@
   }
 
   .card-rank {
-    font-size: 12px;
+    font-size: 18px;
     font-weight: bold;
     font-family: Georgia, serif;
-  }
-
-  .card-suit-small {
-    font-size: 10px;
   }
 
   .card-suit-center {
@@ -137,7 +133,7 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    font-size: 26px;
+    font-size: 39px;
     line-height: 1;
   }
 
@@ -677,19 +673,17 @@ function makeCardEl(card) {
 
   if (card.faceUp) {
     const color = cardColor(card.suit);
-    el.innerHTML = `
-      <div class="card-inner">
-        <div class="card-top-left ${color}">
-          <span class="card-rank">${card.rank}</span>
-          <span class="card-suit-small">${card.suit}</span>
-        </div>
-        <div class="card-suit-center ${color}">${card.suit}</div>
-        <div class="card-bottom-right ${color}">
-          <span class="card-rank">${card.rank}</span>
-          <span class="card-suit-small">${card.suit}</span>
-        </div>
-      </div>`;
-  }
+      el.innerHTML = `
+        <div class="card-inner">
+          <div class="card-top-left ${color}">
+            <span class="card-rank">${card.rank}</span>
+          </div>
+          <div class="card-suit-center ${color}">${card.suit}</div>
+          <div class="card-bottom-right ${color}">
+            <span class="card-rank">${card.rank}</span>
+          </div>
+        </div>`;
+    }
   return el;
 }
 
@@ -717,8 +711,63 @@ function redeal() {
 // ═══════════════════════════════════════════════════════
 //  CLICK-TO-MOVE
 // ═══════════════════════════════════════════════════════
+function getDestPosition(destLocation, destIdx) {
+  if (destLocation === 'foundation') {
+    return { x: foundX(destIdx), y: FOUND_Y };
+  }
+  // tableau column — destination Y is after current last card
+  const col = tableau[destIdx];
+  let y = TABLEAU_Y;
+  for (let r = 0; r < col.length; r++) {
+    y += col[r].faceUp ? COL_Y_FACE : COL_Y_OFFSET;
+  }
+  return { x: colX(destIdx), y };
+}
+
+function animateCardMove(card, fromEl, destLocation, destIdx, onComplete) {
+  const canvasRect = canvas.getBoundingClientRect();
+  const fromRect = fromEl.getBoundingClientRect();
+  const startX = fromRect.left - canvasRect.left;
+  const startY = fromRect.top - canvasRect.top;
+  const dest = getDestPosition(destLocation, destIdx);
+
+  // Build a floating clone
+  const clone = makeCardEl(card);
+  clone.style.position = 'absolute';
+  clone.style.left = startX + 'px';
+  clone.style.top  = startY + 'px';
+  clone.style.zIndex = 1000;
+  clone.style.pointerEvents = 'none';
+  clone.style.boxShadow = '3px 6px 14px rgba(0,0,0,0.6)';
+  canvas.appendChild(clone);
+
+  // Hide the original
+  fromEl.style.visibility = 'hidden';
+
+  const dx = dest.x - startX;
+  const dy = dest.y - startY;
+  const dist = Math.sqrt(dx * dx + dy * dy);
+  const speed = 800; // pixels per second
+  const duration = Math.max(80, dist / speed * 1000); // ms, minimum 80ms
+
+  const startTime = performance.now();
+
+  function step(now) {
+    const t = Math.min((now - startTime) / duration, 1);
+    const ease = t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t; // ease in-out
+    clone.style.left = (startX + dx * ease) + 'px';
+    clone.style.top  = (startY + dy * ease) + 'px';
+    if (t < 1) {
+      requestAnimationFrame(step);
+    } else {
+      clone.remove();
+      onComplete();
+    }
+  }
+  requestAnimationFrame(step);
+}
+
 function clickMove(card, location, col) {
-  // Only move single top cards
   let srcArray, srcIdx;
 
   if (location === 'waste') {
@@ -726,40 +775,33 @@ function clickMove(card, location, col) {
     srcArray = waste; srcIdx = waste.length - 1;
   } else if (location === 'tableau') {
     const colArr = tableau[col];
-    if (colArr[colArr.length - 1].id !== card.id) {
-      // It's a face-up card not on top — treat as drag start (handled in drag)
-      return;
-    }
+    if (colArr[colArr.length - 1].id !== card.id) return;
     srcArray = colArr; srcIdx = colArr.length - 1;
   } else return;
 
-  // Foundation first
+  // Determine destination
   const fi = foundationForCard(card);
-  if (fi >= 0) {
-    foundations[fi].push(srcArray.splice(srcIdx, 1)[0]);
-    // flip new top of column
-    if (location === 'tableau' && tableau[col].length > 0) {
+  const ti = fi < 0 ? tableauForCard(card) : -1;
+  if (fi < 0 && ti < 0) { shakeCard(card.id); return; }
+
+  const destLocation = fi >= 0 ? 'foundation' : 'tableau';
+  const destIdx = fi >= 0 ? fi : ti;
+
+  // Get the live element before touching state
+  const fromEl = canvas.querySelector(`[data-card-id="${CSS.escape(card.id)}"]`);
+  if (!fromEl) return;
+
+  animateCardMove(card, fromEl, destLocation, destIdx, () => {
+    // Update state
+    srcArray.splice(srcIdx, 1);
+    if (location === 'tableau' && tableau[col].length > 0)
       tableau[col][tableau[col].length - 1].faceUp = true;
-    }
+    if (destLocation === 'foundation') foundations[destIdx].push(card);
+    else tableau[destIdx].push(card);
+
     render();
     if (!checkWin()) checkAutoComplete();
-    return;
-  }
-
-  // Tableau
-  const ti = tableauForCard(card);
-  if (ti >= 0) {
-    tableau[ti].push(srcArray.splice(srcIdx, 1)[0]);
-    if (location === 'tableau' && tableau[col].length > 0) {
-      tableau[col][tableau[col].length - 1].faceUp = true;
-    }
-    render();
-    checkAutoComplete();
-    return;
-  }
-
-  // No move — shake
-  shakeCard(card.id);
+  });
 }
 
 function shakeCard(cardId) {

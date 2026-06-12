@@ -11,14 +11,19 @@ It did well. There a couple defects, some other minor changes, but it is
 playable as-is.
 
 
+Version 01.02	11 minutes	1 minutes AI	2 minute test		46 minutes
+
+The cards looked odd. There were three suits shown on the card: on corners and
+the center. That is accurate, but not needed for a small screen and card. Kept
+only the suit in the center. The top number was center-justified. Aligned that 
+to the left. Finally, it looked a little small. Enlarged by 50%. This was easily
+done in one try with Claude.
+One way to move a card that can move is to click on it. This will work, but the
+move is instantaneous. I asked Claude to add animation to move it quickly. It
+did this well on its first attempt.
+
+
 
 Defect: moving should work if you click on a card. But it doesn't appear to work
 	except for the end car. To move multiples, you need to click and drag.
-
-TODO: when doing the simple click to move, animation would help. Move by pixels
-	per 1/30th of second?
-TODO: corners are card are a bit on. Centered on top, corner on bottom. Let's
-	go corner bottom
-TODO: fonts are a little small. In particular, I want numbers larger
-
 
