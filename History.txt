@@ -23,7 +23,22 @@ move is instantaneous. I asked Claude to add animation to move it quickly. It
 did this well on its first attempt.
 
 
+Version 01.03	11 minutes	0 minutes AI	1 minute test		58 minutes
+
+The next change is to verify when the New Game is pressed. It was working on
+any touch, no confirmation. That would result is accidentally ending the game.
+If the game is still going and the New Game button is tapped, I want the game
+to confirm. This was an easy fix for Claude,
+
 
 Defect: moving should work if you click on a card. But it doesn't appear to work
 	except for the end car. To move multiples, you need to click and drag.
+TODO: there should be an Undo button. Undo of any move, you can go back to the 
+	beginning
+TODO: the inverted number in the lower-right of cards... maybe get rid of that? 
+	It is standard, but a bit confusing (original device game didn't have that)
+TODO: add MIT License
+TODO: add icon to browser tab. I'm thinking a card or a suit?'
+TODO: fill out README
+
 

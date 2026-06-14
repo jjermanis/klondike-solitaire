@@ -284,6 +284,43 @@
     font-size: 16px;
   }
 
+  #confirm-overlay {
+    display: none;
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.55);
+    z-index: 2000;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+  }
+
+  #confirm-overlay.show { display: flex; }
+
+  #confirm-box {
+    background: #f5f0e8;
+    border-radius: 10px;
+    padding: 28px 32px;
+    text-align: center;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+    border: 2px solid #c8b860;
+  }
+
+  #confirm-box h2 {
+    font-size: 20px;
+    color: #2d2d2d;
+    margin-bottom: 10px;
+    font-family: Georgia, serif;
+  }
+
+  #confirm-box p {
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 22px;
+    font-family: Georgia, serif;
+  }
+
   /* ── NEW GAME BUTTON ── */
   #btn-new {
     position: absolute;
@@ -347,6 +384,16 @@
       <h1>🎉 You Win!</h1>
       <p>Congratulations! All cards are home.</p>
       <button class="btn btn-yes" id="btn-new-game">New Game</button>
+    </div>
+  </div>
+  <div id="confirm-overlay">
+    <div id="confirm-box">
+      <h2>New Game?</h2>
+      <p>Your current game is still in progress.<br>Are you sure you want to start over?</p>
+      <div class="dialog-buttons">
+        <button class="btn btn-yes" id="btn-confirm-yes">Yes</button>
+        <button class="btn btn-no" id="btn-confirm-no">No</button>
+      </div>
     </div>
   </div>
   <button id="btn-new">New Game</button>
@@ -1081,8 +1128,27 @@ document.getElementById('btn-yes').addEventListener('click', doAutoComplete);
 document.getElementById('btn-no').addEventListener('click', () => {
   dialogOverlay.classList.remove('show');
 });
-document.getElementById('btn-new-game').addEventListener('click', newGame);
-document.getElementById('btn-new').addEventListener('click', newGame);
+const confirmOverlay = document.getElementById('confirm-overlay');
+
+function gameIsOver() {
+  return winScreen.classList.contains('show') ||
+         foundations.every(f => f.length === 13);
+}
+
+function requestNewGame() {
+  if (gameIsOver()) { newGame(); return; }
+  confirmOverlay.classList.add('show');
+}
+
+document.getElementById('btn-new-game').addEventListener('click', newGame); // win screen — no confirm needed
+document.getElementById('btn-new').addEventListener('click', requestNewGame);
+document.getElementById('btn-confirm-yes').addEventListener('click', () => {
+  confirmOverlay.classList.remove('show');
+  newGame();
+});
+document.getElementById('btn-confirm-no').addEventListener('click', () => {
+  confirmOverlay.classList.remove('show');
+});
 
 // ═══════════════════════════════════════════════════════
 //  START
