@@ -14,7 +14,7 @@
     align-items: center;
     min-height: 100vh;
     font-family: Georgia, serif;
-    overflow: hidden;
+    overflow: auto;
   }
 
   #game-wrapper {
@@ -758,6 +758,19 @@ function redeal() {
 // ═══════════════════════════════════════════════════════
 //  CLICK-TO-MOVE
 // ═══════════════════════════════════════════════════════
+function getSourcePosition(location, col) {
+  if (location === 'waste') {
+    return { x: WASTE_X, y: STOCK_Y };
+  }
+  // tableau — compute Y by walking down the column
+  const colArr = tableau[col];
+  let y = TABLEAU_Y;
+  for (let r = 0; r < colArr.length - 1; r++) {
+    y += colArr[r].faceUp ? COL_Y_FACE : COL_Y_OFFSET;
+  }
+  return { x: colX(col), y };
+}
+
 function getDestPosition(destLocation, destIdx) {
   if (destLocation === 'foundation') {
     return { x: foundX(destIdx), y: FOUND_Y };
@@ -771,11 +784,9 @@ function getDestPosition(destLocation, destIdx) {
   return { x: colX(destIdx), y };
 }
 
-function animateCardMove(card, fromEl, destLocation, destIdx, onComplete) {
-  const canvasRect = canvas.getBoundingClientRect();
-  const fromRect = fromEl.getBoundingClientRect();
-  const startX = fromRect.left - canvasRect.left;
-  const startY = fromRect.top - canvasRect.top;
+function animateCardMove(card, start, destLocation, destIdx, onComplete) {
+  const startX = start.x;
+  const startY = start.y;
   const dest = getDestPosition(destLocation, destIdx);
 
   // Build a floating clone
@@ -787,10 +798,6 @@ function animateCardMove(card, fromEl, destLocation, destIdx, onComplete) {
   clone.style.pointerEvents = 'none';
   clone.style.boxShadow = '3px 6px 14px rgba(0,0,0,0.6)';
   canvas.appendChild(clone);
-
-  // Hide the original
-  fromEl.style.visibility = 'hidden';
-
   const dx = dest.x - startX;
   const dy = dest.y - startY;
   const dist = Math.sqrt(dx * dx + dy * dy);
@@ -835,10 +842,8 @@ function clickMove(card, location, col) {
   const destIdx = fi >= 0 ? fi : ti;
 
   // Get the live element before touching state
-  const fromEl = canvas.querySelector(`[data-card-id="${CSS.escape(card.id)}"]`);
-  if (!fromEl) return;
-
-  animateCardMove(card, fromEl, destLocation, destIdx, () => {
+    const start = getSourcePosition(location, col);
+  animateCardMove(card, start, destLocation, destIdx, () => {
     // Update state
     srcArray.splice(srcIdx, 1);
     if (location === 'tableau' && tableau[col].length > 0)
@@ -870,6 +875,10 @@ function getClientXY(e) {
   return { x: e.clientX, y: e.clientY };
 }
 
+function getZoom() {
+  return parseFloat(document.getElementById('game-wrapper').style.zoom) || 1;
+}
+
 function getCanvasRect() {
   return canvas.getBoundingClientRect();
 }
@@ -878,6 +887,7 @@ function startDrag(e, card, location, col, row, el) {
   e.preventDefault();
   const { x, y } = getClientXY(e);
   const rect = getCanvasRect();
+  const zoom = getZoom();
   const elRect = el.getBoundingClientRect();
 
   let cards = [], srcRow = row;
@@ -885,9 +895,8 @@ function startDrag(e, card, location, col, row, el) {
   if (location === 'waste') {
     cards = [waste[waste.length - 1]];
   } else if (location === 'tableau') {
-    // Can drag a stack of face-up cards
     cards = tableau[col].slice(row);
-    if (!cards[0].faceUp) return; // can't drag face-down
+    if (!cards[0].faceUp) return;
   } else if (location === 'foundation') {
     cards = [foundations[col][foundations[col].length - 1]];
   } else return;
@@ -911,8 +920,8 @@ function startDrag(e, card, location, col, row, el) {
     srcLocation: location,
     srcCol: col,
     srcRow: row,
-    offsetX: x - elRect.left,
-    offsetY: y - elRect.top,
+    offsetX: (x - elRect.left) / zoom,
+    offsetY: (y - elRect.top)  / zoom,
     startX: x,
     startY: y,
     hasMoved: false,
@@ -935,10 +944,11 @@ function startDrag(e, card, location, col, row, el) {
 
 function moveDragEls(clientX, clientY, rect) {
   if (!drag) return;
+  const zoom = getZoom();
   if (!rect) rect = getCanvasRect();
   drag.els.forEach((el, i) => {
-    el.style.left = (clientX - rect.left - drag.offsetX) + 'px';
-    el.style.top  = (clientY - rect.top - drag.offsetY + i * COL_Y_FACE) + 'px';
+    el.style.left = ((clientX - rect.left) / zoom - drag.offsetX) + 'px';
+    el.style.top  = ((clientY - rect.top)  / zoom - drag.offsetY + i * COL_Y_FACE) + 'px';
   });
 }
 
@@ -946,8 +956,9 @@ function endDrag(e) {
   if (!drag) return;
   const { x, y } = getClientXY(e);
   const rect = getCanvasRect();
-  const canvasX = x - rect.left;
-  const canvasY = y - rect.top;
+  const zoom = getZoom();
+  const canvasX = (x - rect.left) / zoom;
+  const canvasY = (y - rect.top)  / zoom;
 
   const moved = Math.abs(x - drag.startX) > 4 || Math.abs(y - drag.startY) > 4;
 
@@ -1153,6 +1164,15 @@ document.getElementById('btn-confirm-no').addEventListener('click', () => {
 // ═══════════════════════════════════════════════════════
 //  START
 // ═══════════════════════════════════════════════════════
+function applyScale() {
+  const scaleX = window.innerWidth / 480;
+  const scaleY = window.innerHeight / 640;
+  const scale = Math.max(1.0, Math.min(scaleX, scaleY));
+  document.getElementById('game-wrapper').style.zoom = scale;
+}
+
+window.addEventListener('resize', applyScale);
+applyScale();
 newGame();
 </script>
 </body>

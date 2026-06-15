@@ -31,10 +31,29 @@ If the game is still going and the New Game button is tapped, I want the game
 to confirm. This was an easy fix for Claude,
 
 
+Version 01.04	45 minutes	3 minutes AI	3 minutes test		1 hour 49
+
+Testing on an iPad, the game didn't expand to the available space. In general, I
+wanted to expand as much as possible in the browser. This took several attempts
+to resolve. The initial to resize to the available space (with a certain
+minimum) was easy to change. After doing this, the click-and-drag and click to
+move was off: the start position was off from it appeared to start. I'm not
+going to bother documenting the steps. I'd estimate six iterations for Claude to
+get this to work correctly.
+
+
+
 Defect: moving should work if you click on a card. But it doesn't appear to work
 	except for the end car. To move multiples, you need to click and drag.
+Defect: when you click from a card, the card that's being moved still appears
+	 where it started. It remains until after the move is complete. It
+	should remove that moving card as soon as it starts. This is both
+	columns and the stack.
 TODO: there should be an Undo button. Undo of any move, you can go back to the 
 	beginning
+TODO: You can't see the suit when the card is in a stack. Maybe put them on the
+	other side?
+TODO: the deck only shows 1 card. Maybe show the top 3 (if there)?
 TODO: the inverted number in the lower-right of cards... maybe get rid of that? 
 	It is standard, but a bit confusing (original device game didn't have that)
 TODO: add MIT License
