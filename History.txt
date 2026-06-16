@@ -42,13 +42,21 @@ going to bother documenting the steps. I'd estimate six iterations for Claude to
 get this to work correctly.
 
 
+Version 01.05	9 minutes	1 minute AI	3 minutes test		2 hours 2
+
+I noticed a regression. When moving a card, while the card moves, that card is
+still seen in the start location. It doesn't change to the new view until the
+card reaches the destination. I asked Claude to address: it was an easy two lines.
+Like all web apps, I wanted to add a browser tab icon. Claude suggested an Ace of
+Spades card. I tried it and I didn't like it: too small. I switched to just the
+Ace of Spades on a transparent background.
+
+
 
 Defect: moving should work if you click on a card. But it doesn't appear to work
 	except for the end car. To move multiples, you need to click and drag.
-Defect: when you click from a card, the card that's being moved still appears
-	 where it started. It remains until after the move is complete. It
-	should remove that moving card as soon as it starts. This is both
-	columns and the stack.
+Defect: on the celebration, the dropping cards stop at the bottom. Looks odd -
+	they should all disappear.
 TODO: there should be an Undo button. Undo of any move, you can go back to the 
 	beginning
 TODO: You can't see the suit when the card is in a stack. Maybe put them on the
@@ -57,7 +65,6 @@ TODO: the deck only shows 1 card. Maybe show the top 3 (if there)?
 TODO: the inverted number in the lower-right of cards... maybe get rid of that? 
 	It is standard, but a bit confusing (original device game didn't have that)
 TODO: add MIT License
-TODO: add icon to browser tab. I'm thinking a card or a suit?'
 TODO: fill out README
 
 

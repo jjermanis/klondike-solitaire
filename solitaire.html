@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>Solitaire</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='1em' font-size='90' text-anchor='middle' x='50%'>♠</text></svg>">
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; touch-action: none; }
 
@@ -803,6 +804,8 @@ function animateCardMove(card, start, destLocation, destIdx, onComplete) {
   const dist = Math.sqrt(dx * dx + dy * dy);
   const speed = 800; // pixels per second
   const duration = Math.max(80, dist / speed * 1000); // ms, minimum 80ms
+  const original = canvas.querySelector(`[data-card-id="${CSS.escape(card.id)}"]`);
+  if (original) original.style.visibility = 'hidden';
 
   const startTime = performance.now();
 
