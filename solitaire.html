@@ -323,11 +323,10 @@
   }
 
   /* ── NEW GAME BUTTON ── */
-  #btn-new {
+#btn-new {
     position: absolute;
     bottom: 10px;
-    left: 50%;
-    transform: translateX(-50%);
+    right: 10px;
     background: rgba(0,0,0,0.35);
     color: rgba(255,255,255,0.75);
     border: 1px solid rgba(255,255,255,0.25);
@@ -342,6 +341,31 @@
   #btn-new:hover {
     background: rgba(0,0,0,0.55);
     color: #fff;
+  }
+
+  #btn-undo {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    background: rgba(0,0,0,0.35);
+    color: rgba(255,255,255,0.75);
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 5px;
+    padding: 5px 18px;
+    font-size: 12px;
+    font-family: Georgia, serif;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  #btn-undo:hover {
+    background: rgba(0,0,0,0.55);
+    color: #fff;
+  }
+
+  #btn-undo:disabled {
+    opacity: 0.3;
+    cursor: default;
   }
 
   /* ── WIN ANIMATION ── */
@@ -397,6 +421,7 @@
       </div>
     </div>
   </div>
+  <button id="btn-undo">Undo</button>
   <button id="btn-new">New Game</button>
 </div>
 
@@ -430,6 +455,34 @@ const STOCK_Y = 10;
 // ═══════════════════════════════════════════════════════
 let stock = [], waste = [], foundations = [[],[],[],[]], tableau = [[],[],[],[],[],[],[]];
 let autoCompletePrompted = false;
+let undoStack = [];
+
+function saveState() {
+  undoStack.push({
+    stock: stock.map(c => ({ ...c })),
+    waste: waste.map(c => ({ ...c })),
+    foundations: foundations.map(f => f.map(c => ({ ...c }))),
+    tableau: tableau.map(col => col.map(c => ({ ...c }))),
+    autoCompletePrompted
+  });
+  updateUndoButton();
+}
+
+function updateUndoButton() {
+  document.getElementById('btn-undo').disabled = undoStack.length === 0;
+}
+
+function undo() {
+  if (undoStack.length === 0) return;
+  const state = undoStack.pop();
+  stock       = state.stock;
+  waste       = state.waste;
+  foundations = state.foundations;
+  tableau     = state.tableau;
+  autoCompletePrompted = state.autoCompletePrompted;
+  updateUndoButton();
+  render();
+}
 
 // ═══════════════════════════════════════════════════════
 //  DOM
@@ -469,9 +522,11 @@ function newGame() {
   foundations = [[],[],[],[]];
   tableau = [[],[],[],[],[],[],[]];
   autoCompletePrompted = false;
+  undoStack = [];
   dialogOverlay.classList.remove('show');
   winScreen.classList.remove('show');
   clearBounceCards();
+  updateUndoButton();
 
   const deck = shuffle(makeDeck());
   let idx = 0;
@@ -740,6 +795,7 @@ function makeCardEl(card) {
 // ═══════════════════════════════════════════════════════
 function drawCard() {
   if (stock.length === 0) return;
+    saveState();
   const card = stock.pop();
   card.faceUp = true;
   waste.push(card);
@@ -748,6 +804,7 @@ function drawCard() {
 
 function redeal() {
   if (stock.length > 0) return;
+    saveState();
   while (waste.length > 0) {
     const card = waste.pop();
     card.faceUp = false;
@@ -846,6 +903,7 @@ function clickMove(card, location, col) {
 
   // Get the live element before touching state
     const start = getSourcePosition(location, col);
+    saveState();
   animateCardMove(card, start, destLocation, destIdx, () => {
     // Update state
     srcArray.splice(srcIdx, 1);
@@ -1045,6 +1103,7 @@ function hitTest(cx, cy, x, y, w, h) {
 }
 
 function moveCards(cards, srcLocation, srcCol, srcRow, destLocation, destIdx) {
+  saveState();
   // Remove from source
   if (srcLocation === 'waste') {
     waste.pop();
@@ -1142,6 +1201,7 @@ document.getElementById('btn-yes').addEventListener('click', doAutoComplete);
 document.getElementById('btn-no').addEventListener('click', () => {
   dialogOverlay.classList.remove('show');
 });
+document.getElementById('btn-undo').addEventListener('click', undo);
 const confirmOverlay = document.getElementById('confirm-overlay');
 
 function gameIsOver() {
