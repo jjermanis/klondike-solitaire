@@ -62,9 +62,22 @@ But the first change appear to work. It allows Undo for many: draw cards,
 moving cards, both within board and to the top-left stocks.
 
 
+Version 01.07	10 minutes	2 minute AI	3 minutes test		2 hours 34
 
-Defect: moving should work if you click on a card. But it doesn't appear to work
-	except for the end car. To move multiples, you need to click and drag.
+There was a functional defect I wanted to fix. For the columns in the tableau,
+you can do more than just move the bottom card. If a card higher in chain of
+cards can all move, all the cards should be moveable together. If you click-
+and-drag, it works. If you just clip, it does not - only works when you click
+at the bottom. I asked Claude to address this. The attempt had a defect. It 
+would not move after clicking - not even the very bottom would work. Claude
+found the defect it added (one-line change). Now it works for all the desired
+cases.
+
+
+
+Defect: when you click to move a stack, and by that I mean more than one card,
+	it should show all cards moving. Now, it just shows the one card click.
+	The whole set of coins should move - it does that if you click and drag.
 Defect: on the celebration, the dropping cards stop at the bottom. Looks odd -
 	they should all disappear.
 TODO: Adding the Undo button moved the New Game button to the right. Move New Game

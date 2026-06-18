@@ -816,14 +816,14 @@ function redeal() {
 // ═══════════════════════════════════════════════════════
 //  CLICK-TO-MOVE
 // ═══════════════════════════════════════════════════════
-function getSourcePosition(location, col) {
+function getSourcePosition(location, col, row) {
   if (location === 'waste') {
     return { x: WASTE_X, y: STOCK_Y };
   }
-  // tableau — compute Y by walking down the column
+  // tableau — compute Y by walking down to the given row
   const colArr = tableau[col];
   let y = TABLEAU_Y;
-  for (let r = 0; r < colArr.length - 1; r++) {
+  for (let r = 0; r < row; r++) {
     y += colArr[r].faceUp ? COL_Y_FACE : COL_Y_OFFSET;
   }
   return { x: colX(col), y };
@@ -881,36 +881,39 @@ function animateCardMove(card, start, destLocation, destIdx, onComplete) {
   requestAnimationFrame(step);
 }
 
-function clickMove(card, location, col) {
-  let srcArray, srcIdx;
+function clickMove(card, location, col, row) {
+  let srcArray, srcIdx, cards;
 
   if (location === 'waste') {
     if (waste.length === 0 || waste[waste.length - 1].id !== card.id) return;
     srcArray = waste; srcIdx = waste.length - 1;
+    cards = [card];
   } else if (location === 'tableau') {
     const colArr = tableau[col];
-    if (colArr[colArr.length - 1].id !== card.id) return;
-    srcArray = colArr; srcIdx = colArr.length - 1;
+    if (!card.faceUp) return;
+    srcIdx = row;
+    srcArray = colArr;
+    cards = colArr.slice(row); // card + everything below it
   } else return;
 
-  // Determine destination
-  const fi = foundationForCard(card);
-  const ti = fi < 0 ? tableauForCard(card) : -1;
+  // Only single cards can go to foundation
+  const fi = cards.length === 1 ? foundationForCard(cards[0]) : -1;
+  const ti = fi < 0 ? tableauForCard(cards[0]) : -1;
   if (fi < 0 && ti < 0) { shakeCard(card.id); return; }
 
   const destLocation = fi >= 0 ? 'foundation' : 'tableau';
   const destIdx = fi >= 0 ? fi : ti;
 
-  // Get the live element before touching state
-    const start = getSourcePosition(location, col);
-    saveState();
+  const start = getSourcePosition(location, col, row);
+  saveState();
   animateCardMove(card, start, destLocation, destIdx, () => {
-    // Update state
-    srcArray.splice(srcIdx, 1);
+    // Remove cards from source
+    srcArray.splice(srcIdx);
     if (location === 'tableau' && tableau[col].length > 0)
       tableau[col][tableau[col].length - 1].faceUp = true;
-    if (destLocation === 'foundation') foundations[destIdx].push(card);
-    else tableau[destIdx].push(card);
+    // Add to destination
+    if (destLocation === 'foundation') foundations[destIdx].push(cards[0]);
+    else for (const c of cards) tableau[destIdx].push(c);
 
     render();
     if (!checkWin()) checkAutoComplete();
@@ -1027,14 +1030,14 @@ function endDrag(e) {
   drag.els.forEach(el => el.remove());
 
   if (!moved) {
-    // Treat as click-move
     restoreVisibility();
     const card = drag.originCard;
     const loc = drag.srcLocation;
     const col = drag.srcCol;
+    const row = drag.srcRow;
     drag = null;
-    if (loc === 'foundation') return; // don't click-move from foundation
-    clickMove(card, loc, col);
+    if (loc === 'foundation') return;
+    clickMove(card, loc, col, row);
     return;
   }
 
