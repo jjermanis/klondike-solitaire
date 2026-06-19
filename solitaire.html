@@ -389,6 +389,7 @@
     0%   { transform: translateY(0); }
     100% { transform: translateY(700px); }
   }
+
 </style>
 </head>
 <body>
@@ -842,39 +843,45 @@ function getDestPosition(destLocation, destIdx) {
   return { x: colX(destIdx), y };
 }
 
-function animateCardMove(card, start, destLocation, destIdx, onComplete) {
+function animateCardMove(cards, start, destLocation, destIdx, onComplete) {
   const startX = start.x;
   const startY = start.y;
   const dest = getDestPosition(destLocation, destIdx);
 
-  // Build a floating clone
-  const clone = makeCardEl(card);
-  clone.style.position = 'absolute';
-  clone.style.left = startX + 'px';
-  clone.style.top  = startY + 'px';
-  clone.style.zIndex = 1000;
-  clone.style.pointerEvents = 'none';
-  clone.style.boxShadow = '3px 6px 14px rgba(0,0,0,0.6)';
-  canvas.appendChild(clone);
+  // Build a floating clone for each card in the stack
+  const clones = cards.map((c, i) => {
+    const clone = makeCardEl(c);
+    clone.style.position = 'absolute';
+    clone.style.left = startX + 'px';
+    clone.style.top  = (startY + i * COL_Y_FACE) + 'px';
+    clone.style.zIndex = 1000 + i;
+    clone.style.pointerEvents = 'none';
+    clone.style.boxShadow = '3px 6px 14px rgba(0,0,0,0.6)';
+    canvas.appendChild(clone);
+    // Hide the original
+    const original = canvas.querySelector(`[data-card-id="${CSS.escape(c.id)}"]`);
+    if (original) original.style.visibility = 'hidden';
+    return clone;
+  });
+
   const dx = dest.x - startX;
   const dy = dest.y - startY;
   const dist = Math.sqrt(dx * dx + dy * dy);
-  const speed = 800; // pixels per second
-  const duration = Math.max(80, dist / speed * 1000); // ms, minimum 80ms
-  const original = canvas.querySelector(`[data-card-id="${CSS.escape(card.id)}"]`);
-  if (original) original.style.visibility = 'hidden';
-
+  const speed = 800;
+  const duration = Math.max(80, dist / speed * 1000);
   const startTime = performance.now();
 
   function step(now) {
     const t = Math.min((now - startTime) / duration, 1);
-    const ease = t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t; // ease in-out
-    clone.style.left = (startX + dx * ease) + 'px';
-    clone.style.top  = (startY + dy * ease) + 'px';
+    const ease = t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+    clones.forEach((clone, i) => {
+      clone.style.left = (startX + dx * ease) + 'px';
+      clone.style.top  = (startY + i * COL_Y_FACE + dy * ease) + 'px';
+    });
     if (t < 1) {
       requestAnimationFrame(step);
     } else {
-      clone.remove();
+      clones.forEach(c => c.remove());
       onComplete();
     }
   }
@@ -904,9 +911,9 @@ function clickMove(card, location, col, row) {
   const destLocation = fi >= 0 ? 'foundation' : 'tableau';
   const destIdx = fi >= 0 ? fi : ti;
 
-  const start = getSourcePosition(location, col, row);
+   const start = getSourcePosition(location, col, row);
   saveState();
-  animateCardMove(card, start, destLocation, destIdx, () => {
+  animateCardMove(cards, start, destLocation, destIdx, () => {
     // Remove cards from source
     srcArray.splice(srcIdx);
     if (location === 'tableau' && tableau[col].length > 0)

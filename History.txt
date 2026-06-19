@@ -74,10 +74,14 @@ found the defect it added (one-line change). Now it works for all the desired
 cases.
 
 
+Version 01.08	6 minutes	1 minute AI	2 minutes test		2 hours 43
 
-Defect: when you click to move a stack, and by that I mean more than one card,
-	it should show all cards moving. Now, it just shows the one card click.
-	The whole set of coins should move - it does that if you click and drag.
+Clicking worked, with a UI tweak: it would only show the bottom card if a stack
+got clicked. I asked Claude to resolve. It took some lines of code, but it was
+fast and worked the first time.
+
+
+
 Defect: on the celebration, the dropping cards stop at the bottom. Looks odd -
 	they should all disappear.
 TODO: Adding the Undo button moved the New Game button to the right. Move New Game
