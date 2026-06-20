@@ -11,7 +11,7 @@ It did well. There a couple defects, some other minor changes, but it is
 playable as-is.
 
 
-Version 01.02	11 minutes	1 minutes AI	2 minute test		46 minutes
+Version 01.02	11 minutes dev	1 minutes AI	2 minute test		46 minutes
 
 The cards looked odd. There were three suits shown on the card: on corners and
 the center. That is accurate, but not needed for a small screen and card. Kept
@@ -23,7 +23,7 @@ move is instantaneous. I asked Claude to add animation to move it quickly. It
 did this well on its first attempt.
 
 
-Version 01.03	11 minutes	0 minutes AI	1 minute test		58 minutes
+Version 01.03	11 minutes dev	0 minutes AI	1 minute test		58 minutes
 
 The next change is to verify when the New Game is pressed. It was working on
 any touch, no confirmation. That would result is accidentally ending the game.
@@ -31,7 +31,7 @@ If the game is still going and the New Game button is tapped, I want the game
 to confirm. This was an easy fix for Claude,
 
 
-Version 01.04	45 minutes	3 minutes AI	3 minutes test		1 hour 49
+Version 01.04	45 minutes dev	3 minutes AI	3 minutes test		1 hour 49
 
 Testing on an iPad, the game didn't expand to the available space. In general, I
 wanted to expand as much as possible in the browser. This took several attempts
@@ -42,7 +42,7 @@ going to bother documenting the steps. I'd estimate six iterations for Claude to
 get this to work correctly.
 
 
-Version 01.05	9 minutes	1 minute AI	3 minutes test		2 hours 2
+Version 01.05	9 minutes dev	1 minute AI	3 minutes test		2 hours 2
 
 I noticed a regression. When moving a card, while the card moves, that card is
 still seen in the start location. It doesn't change to the new view until the
@@ -52,7 +52,7 @@ Spades card. I tried it and I didn't like it: too small. I switched to just the
 Ace of Spades on a transparent background.
 
 
-Version 01.06	14 minutes	1 minute AI	2 minutes test		2 hours 19
+Version 01.06	14 minutes dev	1 minute AI	2 minutes test		2 hours 19
 
 This game really needed an Undo button. If there was a move done accidentally,
 many of them could not be undone. I asked Claude to add an Undo button. I would
@@ -62,7 +62,7 @@ But the first change appear to work. It allows Undo for many: draw cards,
 moving cards, both within board and to the top-left stocks.
 
 
-Version 01.07	10 minutes	2 minute AI	3 minutes test		2 hours 34
+Version 01.07	10 minutes dev	2 minute AI	3 minutes test		2 hours 34
 
 There was a functional defect I wanted to fix. For the columns in the tableau,
 you can do more than just move the bottom card. If a card higher in chain of
@@ -74,24 +74,31 @@ found the defect it added (one-line change). Now it works for all the desired
 cases.
 
 
-Version 01.08	6 minutes	1 minute AI	2 minutes test		2 hours 43
+Version 01.08	6 minutes dev	1 minute AI	2 minutes test		2 hours 43
 
 Clicking worked, with a UI tweak: it would only show the bottom card if a stack
 got clicked. I asked Claude to resolve. It took some lines of code, but it was
 fast and worked the first time.
 
 
+Version 01.09 	18 minutes dev	2 minutes AI	4 minutes test		3 hours 7
 
-Defect: on the celebration, the dropping cards stop at the bottom. Looks odd -
-	they should all disappear.
-TODO: Adding the Undo button moved the New Game button to the right. Move New Game
-	back to the center.
-TODO: You can't see the suit when the card is in a stack. Maybe put them on the
-	other side?
-TODO: the deck only shows 1 card. Maybe show the top 3 (if there)?
-TODO: the inverted number in the lower-right of cards... maybe get rid of that? 
-	It is standard, but a bit confusing (original device game didn't have that)
-TODO: add MIT License
+There was a UI oddity at the end of the game. After all the cards are moved up
+to the foundation, there are cards that drop from top to bottom. But they didn't
+go all the way: the cards would (visibly) stop with about a third of the card
+remaining on screen. I asked Claude to change this. It moved the cards down 
+further to get them off the screen, and faded the color out toward the bottom.
+There were a couple defect to resolve to get this working.
+After adding the Undo button, the New Game button moved from center-justified to
+right. I asked Claude to move it back to center - it was trivial.
+
+
+
 TODO: fill out README
-
+Maybe: You can't see the suit when the card is in a stack. Maybe put them on the
+	other side?
+Maybe: the deck only shows 1 card. Maybe show the top 3 (if there)?
+Maybe: the inverted number in the lower-right of cards... maybe get rid of that? 
+	It is standard, but a bit confusing (original device game didn't have that)
+Maybe: add MIT License
 
