@@ -3,17 +3,25 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>Solitaire</title>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='1em' font-size='90' text-anchor='middle' x='50%'>♠</text></svg>">
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; touch-action: none; }
 
+  :root {
+    --scale: 1;
+    --font-rank: 18px;
+    --font-suit: 39px;
+  }
+
   body {
     background: #1a1a1a;
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
     min-height: 100vh;
+    min-height: -webkit-fill-available;
     font-family: Georgia, serif;
     overflow: auto;
   }
@@ -124,7 +132,7 @@
   }
 
   .card-rank {
-    font-size: 18px;
+    font-size: var(--font-rank);
     font-weight: bold;
     font-family: Georgia, serif;
   }
@@ -134,7 +142,7 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    font-size: 39px;
+    font-size: var(--font-suit);
     line-height: 1;
   }
 
@@ -369,6 +377,16 @@
     cursor: default;
   }
 
+  #debug-display {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    color: rgba(255,255,255,0.75);
+    font-size: 11px;
+    font-family: Georgia, serif;
+    pointer-events: none;
+  }
+
   /* ── WIN ANIMATION ── */
   .bounce-card {
     position: absolute;
@@ -426,6 +444,7 @@
   </div>
   <button id="btn-undo">Undo</button>
   <button id="btn-new">New Game</button>
+  <div id="debug-display"></div>
 </div>
 
 <script>
@@ -436,6 +455,7 @@ const CARD_W = 58, CARD_H = 82;
 const TABLEAU_Y = 140;
 const COL_Y_OFFSET = 18;   // face-down overlap
 const COL_Y_FACE = 22;     // face-up overlap
+const DEBUG = true;
 
 const SUITS = ['♠','♥','♦','♣'];
 const RANKS = ['A','2','3','4','5','6','7','8','9','10','J','Q','K'];
@@ -473,6 +493,17 @@ function saveState() {
 
 function updateUndoButton() {
   document.getElementById('btn-undo').disabled = undoStack.length === 0;
+}
+
+function updateDebug() {
+  if (!DEBUG) return;
+  const tabCount  = tableau.reduce((sum, col) => sum + col.length, 0);
+  const foundCount = foundations.reduce((sum, f) => sum + f.length, 0);
+  const stockCount = stock.length;
+  const wasteCount = waste.length;
+  const total = tabCount + foundCount + stockCount + wasteCount;
+  document.getElementById('debug-display').textContent =
+    `${total} (${tabCount}+${foundCount}+${stockCount}+${wasteCount})`;
 }
 
 function undo() {
@@ -770,6 +801,7 @@ function render() {
   }
 
   attachEvents();
+  updateDebug();
 }
 
 function makeCardEl(card) {
@@ -1240,12 +1272,24 @@ document.getElementById('btn-confirm-no').addEventListener('click', () => {
 //  START
 // ═══════════════════════════════════════════════════════
 function applyScale() {
-  const scaleX = window.innerWidth / 480;
-  const scaleY = window.innerHeight / 640;
+  const vw = window.visualViewport ? window.visualViewport.width : window.innerWidth;
+  const vh = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+  const scaleX = vw / 480;
+  const scaleY = vh / 640;
   const scale = Math.max(1.0, Math.min(scaleX, scaleY));
-  document.getElementById('game-wrapper').style.zoom = scale;
+  const wrapper = document.getElementById('game-wrapper');
+  wrapper.style.zoom = scale;
+
+  // Only explicitly scale fonts on Safari, where zoom doesn't scale them
+  const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+  const fontScale = isSafari ? scale : 1;
+  document.documentElement.style.setProperty('--font-rank', (18 * fontScale) + 'px');
+  document.documentElement.style.setProperty('--font-suit', (39 * fontScale) + 'px');
 }
 
+if (window.visualViewport) {
+  window.visualViewport.addEventListener('resize', applyScale);
+}
 window.addEventListener('resize', applyScale);
 applyScale();
 newGame();

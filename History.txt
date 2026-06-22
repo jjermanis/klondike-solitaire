@@ -93,12 +93,43 @@ After adding the Undo button, the New Game button moved from center-justified to
 right. I asked Claude to move it back to center - it was trivial.
 
 
+Version 01.10 	19 minutes dev	2 minutes AI	2 minutes test		3 hours 30
 
+Doing iPad-specific testing now. There were adjustments made to the size of the
+game to fit the available space on the screen. This worked on iPad: the screen
+got large on that screen, and the size of the cards match. However, the 
+iPad test - numbers and suits were not be scaled on this OS. I asked Claude to a
+fix. It applied to a change the would work on iOS and Windows. The downside was
+the Windows then has two enlargers, making it too big. Switched to one enlarger
+that would work on both.
+On iOS, there is a margin at the top of the screen. It was not accommodated for -
+the screen was a little too big, partially hiding the buttons at the bottom.
+Claude switched the values used for sizing to handle both iOS and Windows.
+
+
+Version 01.11	8 minutes dev	0 minutes AI	1 minutes test		3 hours 39
+That previous attempt to account for a margin did not work. Claude provided
+another attempt for game screen sizing for iOS and Windows.
+
+
+Version 01.12	15 minutes dev	1 minute AI	3 minutes test		3 hours 58
+This was a good version 1 release. During testing, a critical issue was found. It
+was unclear how or when, but a couple cards were missing. It was counted two times
+by different people: total count was 50, not 52. This was not a duplicable problem.
+It is a severe defect. To help troubleshoot, added card totals to the bottom-right
+corner. This will help identify when and if this is seen again. To be clear: there
+is no resolution for this yet.
+
+
+
+Defect: playing on iPad, we saw cards disappear. Counted all cards - confirmed
+	that there were only 50. Need to identify why.
+TODO: the inverted number in the lower-right of cards... maybe get rid of that? 
+	It is standard, but a bit confusing (original device game didn't have that)
 TODO: fill out README
 Maybe: You can't see the suit when the card is in a stack. Maybe put them on the
 	other side?
 Maybe: the deck only shows 1 card. Maybe show the top 3 (if there)?
-Maybe: the inverted number in the lower-right of cards... maybe get rid of that? 
-	It is standard, but a bit confusing (original device game didn't have that)
 Maybe: add MIT License
+
 
