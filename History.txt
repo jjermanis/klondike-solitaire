@@ -121,12 +121,12 @@ corner. This will help identify when and if this is seen again. To be clear: the
 is no resolution for this yet.
 
 
+Version 01.12 was released on 6/24/26
+
+
 
 Defect: playing on iPad, we saw cards disappear. Counted all cards - confirmed
 	that there were only 50. Need to identify why.
-TODO: the inverted number in the lower-right of cards... maybe get rid of that? 
-	It is standard, but a bit confusing (original device game didn't have that)
-TODO: fill out README
 Maybe: You can't see the suit when the card is in a stack. Maybe put them on the
 	other side?
 Maybe: the deck only shows 1 card. Maybe show the top 3 (if there)?
