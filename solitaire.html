@@ -836,6 +836,7 @@ function makeCardEl(card) {
 //  STOCK CLICK / DRAW
 // ═══════════════════════════════════════════════════════
 function drawCard() {
+  if (animating || drag) return;
   if (stock.length === 0) return;
     saveState();
   const card = stock.pop();
@@ -845,6 +846,7 @@ function drawCard() {
 }
 
 function redeal() {
+  if (animating || drag) return;
   if (stock.length > 0) return;
     saveState();
   while (waste.length > 0) {
@@ -923,13 +925,16 @@ function animateCardMove(cards, start, destLocation, destIdx, onComplete) {
       requestAnimationFrame(step);
     } else {
       clones.forEach(c => c.remove());
+      animating = false;
       onComplete();
     }
   }
+  animating = true;
   requestAnimationFrame(step);
 }
 
 function clickMove(card, location, col, row) {
+  if (animating || drag) return;
   let srcArray, srcIdx, cards;
 
   if (location === 'waste') {
@@ -980,6 +985,7 @@ function shakeCard(cardId) {
 //  DRAG & DROP
 // ═══════════════════════════════════════════════════════
 let drag = null; // { cards, els, srcLocation, srcCol, srcRow, startX, startY, offsetX, offsetY }
+let animating = false;
 
 function getClientXY(e) {
   if (e.touches && e.touches.length > 0) return { x: e.touches[0].clientX, y: e.touches[0].clientY };
@@ -997,6 +1003,7 @@ function getCanvasRect() {
 
 function startDrag(e, card, location, col, row, el) {
   e.preventDefault();
+  if (drag || animating) return;
   const { x, y } = getClientXY(e);
   const rect = getCanvasRect();
   const zoom = getZoom();

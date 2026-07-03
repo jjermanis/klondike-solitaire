@@ -124,9 +124,31 @@ is no resolution for this yet.
 Version 01.12 was released on 6/24/26
 
 
+Version 02.01	18 minutes dev	1 minute AI	4 minutes test		4 hours 21
+
+This resolves one severe defect. There was a case where there were two aces next to 
+each other, visible on the columns. I tapped the first ace. As the animation 
+happened to move the first ace, I tapped the second ace. When that first animation 
+ended, BOTH aces were not on the columns, but you could only see one ace on the 
+foundation.
+To address, Claude introduced an animating flag. While something is being animated,
+it is set to true. While that flag is set, another move cannot be set: the 
+animation needs to finish before making another move. This worked well in testing.
+
 
 Defect: playing on iPad, we saw cards disappear. Counted all cards - confirmed
 	that there were only 50. Need to identify why.
+TODO: to get to the auto-finish option, you need all the cards open, both from the
+	columns and the deck. But all of the deck is always reachable. Offer
+	should be offered when all cards are revealed in columns.
+TODO: the spiral to flip the deck appears not to size on iPad. Get it in line
+	with other UI.
+TODO: the move a little fussy. I've something before that mouse can move up to 4.
+	Maybe 8? Not sure what, but a bit easier. It's rough to be that steady
+	on mobile.
+TODO: show animation when a card is drawn from the stack
+TODO: show how many cards remain in the stack
+TODO: show the suit in the upper-right corner
 Maybe: You can't see the suit when the card is in a stack. Maybe put them on the
 	other side?
 Maybe: the deck only shows 1 card. Maybe show the top 3 (if there)?
