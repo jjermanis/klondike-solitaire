@@ -136,7 +136,7 @@ it is set to true. While that flag is set, another move cannot be set: the
 animation needs to finish before making another move. This worked well in testing.
 
 
-Version 02.02	30 minutes	2 minutes AU	3 minutes test		4 hours 56
+Version 02.02	30 minutes dev	2 minutes AI	3 minutes test		4 hours 56
 DID NOT COMMIT
 Animation exists for cards moving from one place to another. There were two cases
 that did not have animation: drawing cards and all the cards being auto-exited
@@ -147,7 +147,7 @@ after the move. It looked weird. Several attempts made; it was never resolved. W
 come back to this later.
 
 
-Version 02.03	15 minutes	1 minute AU	2 minute test		5 hours 14
+Version 02.03	15 minutes dev	1 minute AI	2 minute test		5 hours 14
 
 In some online solitaire games, it will show you how many cards remain in the
 deck. I wanted to add that. In this case, it was easy and it went well on the
@@ -159,20 +159,29 @@ the tolerance for how far the mouse can move on a click: 4 pixels on mouse,
 see how it does on tablet.
 
 
+Version 02.04	8 minutes dev	0 minutes AI	1 minute test		5 hours 23
+
+I got a request to put the suit in the upper-right corner. It makes sense: you
+can't see the suit in the center when cards are stacked on the columns. Added
+icons to the upper-right. Pretty straight forward.
+When playing on a tablet, the redeal icon (the one in the upper-right corner, 
+when the deck is empty) wasn't resizing. I had Claude check. It was adjusting
+for size for that icon on Safari and I confirmed. I increased the size - maybe
+Safari sizes that symbol differently than Chrome?
+
+
 
 Defect: playing on iPad, we saw cards disappear. Counted all cards - confirmed
 	that there were only 50. Need to identify why.
 TODO: to get to the auto-finish option, you need all the cards open, both from the
 	columns and the deck. But all of the deck is always reachable. Offer
 	should be made when all cards are revealed in columns.
-TODO: the spiral to flip the deck appears not to size on iPad. Get it in line
-	with other UI.
 TODO: show animation when a card is drawn from the stack
 TODO: show animation when you have done well enough to go to win
-TODO: show the suit in the upper-right corner
-Maybe: You can't see the suit when the card is in a stack. Maybe put them on the
-	other side?
 Maybe: the deck only shows 1 card. Maybe show the top 3 (if there)?
 Maybe: add MIT License
+Maybe: the spiral to flip the deck appears not to size on iPad. I checked -
+	it appears that has been implemented. This is not easy to test -
+	it only applies to Safari and iOS. Maybe test, duplicate.
 
 

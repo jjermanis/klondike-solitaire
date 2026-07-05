@@ -130,6 +130,15 @@
     line-height: 1;
   }
 
+  .card-top-right {
+    position: absolute;
+    top: 2px;
+    right: 3px;
+    font-size: var(--font-rank);
+    font-weight: bold;
+    font-family: Georgia, serif;
+  }
+
   .card-bottom-right {
     display: flex;
     flex-direction: column;
@@ -837,7 +846,8 @@ function makeCardEl(card) {
           <div class="card-top-left ${color}">
             <span class="card-rank">${card.rank}</span>
           </div>
-          <div class="card-suit-center ${color}">${card.suit}</div>
+                     <div class="card-top-right ${color}">${card.suit}</div>
+         <div class="card-suit-center ${color}">${card.suit}</div>
         </div>`;
     }
   return el;
@@ -1319,7 +1329,7 @@ function applyScale() {
   document.documentElement.style.setProperty('--font-ui-h2',  (20 * fontScale) + 'px');
   document.documentElement.style.setProperty('--font-ui-h1',  (30 * fontScale) + 'px');
   document.documentElement.style.setProperty('--font-ui-btn', (16 * fontScale) + 'px');
-  document.documentElement.style.setProperty('--font-stock',  (28 * fontScale) + 'px');
+  document.documentElement.style.setProperty('--font-stock',  (32 * fontScale) + 'px');
   document.documentElement.style.setProperty('--font-bounce', (26 * fontScale) + 'px');
   document.documentElement.style.setProperty('--font-debug',  (11 * fontScale) + 'px');
 }
