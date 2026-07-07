@@ -170,18 +170,21 @@ for size for that icon on Safari and I confirmed. I increased the size - maybe
 Safari sizes that symbol differently than Chrome?
 
 
+Version 02.05	11 minutes dev	1 minute AI	2 minutes test		5 hours 37
+
+Previously, to auto-complete the game, the players needed to get all the cards 
+in the columns face up and both the card piles needed to be empty. Checking the
+piles isn't necessary: the player always has access to all of those. I changed 
+auto-complete to only require all the cards in all the columns to be face up. I
+also changed the animation to include the decks. That animation isn't the best,
+but this better than what we had before.
+
+
 
 Defect: playing on iPad, we saw cards disappear. Counted all cards - confirmed
 	that there were only 50. Need to identify why.
-TODO: to get to the auto-finish option, you need all the cards open, both from the
-	columns and the deck. But all of the deck is always reachable. Offer
-	should be made when all cards are revealed in columns.
 TODO: show animation when a card is drawn from the stack
 TODO: show animation when you have done well enough to go to win
 Maybe: the deck only shows 1 card. Maybe show the top 3 (if there)?
 Maybe: add MIT License
-Maybe: the spiral to flip the deck appears not to size on iPad. I checked -
-	it appears that has been implemented. This is not easy to test -
-	it only applies to Safari and iOS. Maybe test, duplicate.
-
 

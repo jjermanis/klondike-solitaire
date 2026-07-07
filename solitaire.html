@@ -633,7 +633,6 @@ function tableauForCard(card) {
 //  AUTO-COMPLETE CHECK
 // ═══════════════════════════════════════════════════════
 function allFaceUp() {
-  if (stock.length > 0 || waste.length > 0) return false;
   for (const col of tableau) for (const c of col) if (!c.faceUp) return false;
   return true;
 }
@@ -652,9 +651,9 @@ function doAutoComplete() {
 }
 
 function runAutoComplete() {
-  // Move one card to foundation, then recurse
   let moved = false;
-  // Try waste
+
+  // Try waste first
   if (waste.length > 0) {
     const card = waste[waste.length - 1];
     const fi = foundationForCard(card);
@@ -663,6 +662,7 @@ function runAutoComplete() {
       moved = true;
     }
   }
+
   // Try tableau columns
   if (!moved) {
     for (let col = 0; col < 7 && !moved; col++) {
@@ -676,6 +676,15 @@ function runAutoComplete() {
       }
     }
   }
+
+  // If nothing moved from waste or tableau, draw from stock to waste
+  if (!moved && stock.length > 0) {
+    const card = stock.pop();
+    card.faceUp = true;
+    waste.push(card);
+    moved = true;
+  }
+
   render();
   if (checkWin()) return;
   if (moved) setTimeout(runAutoComplete, 80);
@@ -1329,7 +1338,7 @@ function applyScale() {
   document.documentElement.style.setProperty('--font-ui-h2',  (20 * fontScale) + 'px');
   document.documentElement.style.setProperty('--font-ui-h1',  (30 * fontScale) + 'px');
   document.documentElement.style.setProperty('--font-ui-btn', (16 * fontScale) + 'px');
-  document.documentElement.style.setProperty('--font-stock',  (32 * fontScale) + 'px');
+  document.documentElement.style.setProperty('--font-stock',  (36 * fontScale) + 'px');
   document.documentElement.style.setProperty('--font-bounce', (26 * fontScale) + 'px');
   document.documentElement.style.setProperty('--font-debug',  (11 * fontScale) + 'px');
 }
