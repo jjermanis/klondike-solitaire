@@ -677,12 +677,22 @@ function runAutoComplete() {
     }
   }
 
-  // If nothing moved from waste or tableau, draw from stock to waste
-  if (!moved && stock.length > 0) {
-    const card = stock.pop();
-    card.faceUp = true;
-    waste.push(card);
-    moved = true;
+  // If nothing moved, draw from stock or redeal waste back to stock
+  if (!moved) {
+    if (stock.length > 0) {
+      const card = stock.pop();
+      card.faceUp = true;
+      waste.push(card);
+      moved = true;
+    } else if (waste.length > 0) {
+      // Redeal: flip waste back to stock and keep going
+      while (waste.length > 0) {
+        const card = waste.pop();
+        card.faceUp = false;
+        stock.push(card);
+      }
+      moved = true;
+    }
   }
 
   render();

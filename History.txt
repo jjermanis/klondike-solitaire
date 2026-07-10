@@ -180,9 +180,20 @@ also changed the animation to include the decks. That animation isn't the best,
 but this better than what we had before.
 
 
+Version 02.06	8 minutes dev	1 minute AI	0 minutes test		5 hours 46
+
+An unusual case was seen a couple times. When you have all 7 columns will all
+cards face up, it will ask if you want to solve the game. If you accept, it will
+try to remove all the cards... but in a couple cases it stopped. I think it was
+due to a card "hiding" in the waste pile. Claude independently came up with a
+fix for that. Hopefully it works!
+
+
 
 Defect: playing on iPad, we saw cards disappear. Counted all cards - confirmed
 	that there were only 50. Need to identify why.
+TODO: sometimes when a card in the stack is clicked, 2 or more move very fast.
+	Need to find a defense for this.
 TODO: show animation when a card is drawn from the stack
 TODO: show animation when you have done well enough to go to win
 Maybe: the deck only shows 1 card. Maybe show the top 3 (if there)?
