@@ -4,7 +4,6 @@ Playing Klondike Solitaire
 
 ## Overview
 Playing a specific version of Klondike Solitarie. It is the variation of interest within my family.
-There is a low-frequency critical defect in the game. It has been seen once that cards get removed entirely from a game; the total number of cards in the game drops below 52. The root cause has not been identified. It has been seen and confirmed only once.
 
 
 ## Direction
@@ -16,7 +15,7 @@ There is a New Game button in the lower-center if you'd like to start another ga
 
 
 ## Details
-Truly, the root cause of the missig cards is unknown. Feel free to share info with me if it happens to you.
+Previously, this game had a defect where some cards would disappear. This is no longer seen. Please do let me know if you do see defects.
 
 
 ## Mobile
@@ -28,4 +27,12 @@ This game is not sized for a mobile phone.
 ## From Release #1 (Build 01.12 on 6/20/26)
 
 * Implements the base version of the game.
+
+
+## From Release #2 (Build 02.07 on 8/23/26)
+
+* Critical defect losing cards is fixed.
+* Improvements to card UI.
+* Now recognize all valid cases where the game can be auto-completed.
+* Fixed issue where you could accidentally speed passed the final card in the deck.
 

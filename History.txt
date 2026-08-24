@@ -189,13 +189,20 @@ due to a card "hiding" in the waste pile. Claude independently came up with a
 fix for that. Hopefully it works!
 
 
+Version 02.07	10 minutes dev	0 minute AI	2 minutes test		5 hours 58
 
-Defect: playing on iPad, we saw cards disappear. Counted all cards - confirmed
-	that there were only 50. Need to identify why.
-TODO: sometimes when a card in the stack is clicked, 2 or more move very fast.
-	Need to find a defense for this.
-TODO: show animation when a card is drawn from the stack
-TODO: show animation when you have done well enough to go to win
+When going through the deck, there is a minimum 250ms wait between cards. It
+was not working for the last card in the deck. This was easy to resolve. The
+delay logic exists for getting the next card in the deck. The very last card
+has different logic - it puts the deck back to the beginning. That logic did
+not have that delay. It has been added.
+Reviewed the list of items. All of them had already been resolved, except MIT
+License. Added that.
+Will update READ.ME and republish.
+
+
+
 Maybe: the deck only shows 1 card. Maybe show the top 3 (if there)?
-Maybe: add MIT License
+Maybe: show animation when a card is drawn from the stack
+Maybe: show animation when you have done well enough to go to win
 
