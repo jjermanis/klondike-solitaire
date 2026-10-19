@@ -201,7 +201,7 @@ License. Added that.
 Will update READ.ME and republish.
 
 
-Version 03.01	6 minutes dev	0 minute AI	1 minute test		6 hours 5
+Version 03.01	6 minutes dev	0 minutes AI	1 minute test		6 hours 5
 
 I noticed this on my implementation of Pyramid solitaire. The game, in theory,
 could be played on a phone. But the screen is a little too big. A one-line
@@ -214,6 +214,20 @@ on iOS compared to Windows. And I could still have a minimum size. Something
 that would work on iPhone portrait, but not landscape.
 
 
+Version 03.02	9 minutes dev	0 minutes AI	1 minute test		6 hours 15
+
+The previous change worked well to have the game playable on my iPhone. It
+had an odd side effect. It would resize to fit in portrait mode. It would
+also resize to fir in landscape mode. That is pointless: the image is way to
+small and is unplayable.
+To resolve, I modified the previous change. I had taken away the limit for
+how small the game screen would get. I put it back in, with a smaller limit
+than previously. On my phone, it resizes for portrait, and not enough for
+landscape, which is fine.
+Claude mentioned it'd help if it reported on the screen if it couldn't be
+sized to fit. Low priority, but a good idea. I will add to the TODO list.
+
+
 
 DEFECT: this was seen once. The game was won. The user click to start another
 game. The game started. The deck continually dealt, without prompt without
@@ -222,13 +236,18 @@ how this happen. It is play many times and was seen once. It dealt very fast,
 it appears faster than it would be possible to do manually, so that limit is
 not enforced.
 
-
 TODO: rename visual use of this game to Klondike Solitaire. Will make it
 	easier to be consistent with the other solitaire names.
 TODO: make the font bigger on iPhone. Maybe iOS or Safari is the root
 	cause?
 TODO: restore something like the similar map size, that will work for
 	portrait but not landscape. Maybe Math.Max(0.8, ...)?
+TODO: update README to show game can be played on mobile phone
+TODO: add UI if the game appears to be too small for the display.
+	Claude suggested: "If it falls below a threshold (about 0.7, 
+	see below), show a full-screen message instead of the game, 
+	such as “Please rotate your device” on phones or “Window too 
+	small” on desktop.
 Maybe: the deck only shows 1 card. Maybe show the top 3 (if there)?
 Maybe: show animation when a card is drawn from the stack
 Maybe: show animation when you have done well enough to go to win

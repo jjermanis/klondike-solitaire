@@ -1361,7 +1361,7 @@ function applyScale() {
   const vh = window.visualViewport ? window.visualViewport.height : window.innerHeight;
   const scaleX = vw / 480;
   const scaleY = vh / 640;
-  const scale = Math.min(scaleX, scaleY);
+  const scale = Math.max(0.8, Math.min(scaleX, scaleY));
   const wrapper = document.getElementById('game-wrapper');
   wrapper.style.zoom = scale;
 
