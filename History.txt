@@ -201,7 +201,34 @@ License. Added that.
 Will update READ.ME and republish.
 
 
+Version 03.01	6 minutes dev	0 minute AI	1 minute test		6 hours 5
 
+I noticed this on my implementation of Pyramid solitaire. The game, in theory,
+could be played on a phone. But the screen is a little too big. A one-line
+change fixed that, allowing the screen to be a small as the UI needs. Not
+ideal: if you hold the phone in landscape, it gets REALLY tiny. But good
+enough for this. This was on Pyramid - it was the same one-line fix to move
+it hear. 
+I'll add a couple of TODOs. The font could be a bit smaller - it looks smaller
+on iOS compared to Windows. And I could still have a minimum size. Something
+that would work on iPhone portrait, but not landscape.
+
+
+
+DEFECT: this was seen once. The game was won. The user click to start another
+game. The game started. The deck continually dealt, without prompt without
+stopping. The browser window needed to be closed to restart. Totally unclear
+how this happen. It is play many times and was seen once. It dealt very fast,
+it appears faster than it would be possible to do manually, so that limit is
+not enforced.
+
+
+TODO: rename visual use of this game to Klondike Solitaire. Will make it
+	easier to be consistent with the other solitaire names.
+TODO: make the font bigger on iPhone. Maybe iOS or Safari is the root
+	cause?
+TODO: restore something like the similar map size, that will work for
+	portrait but not landscape. Maybe Math.Max(0.8, ...)?
 Maybe: the deck only shows 1 card. Maybe show the top 3 (if there)?
 Maybe: show animation when a card is drawn from the stack
 Maybe: show animation when you have done well enough to go to win
